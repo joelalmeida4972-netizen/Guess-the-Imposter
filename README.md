@@ -36,10 +36,10 @@ Everyone in the room receives the **same secret word**—except for the **Impost
 
 | Step | Phase | Action |
 | :--- | :--- | :--- |
-| **01** | **Setup** | Pick total players (3 to 22) and imposter count (1 to 10)[cite: 1]. Type names. |
-| **02** | **Secret Hand-Off** | The game randomizes the player sequence[cite: 1]. Pass the phone as each name is called. |
-| **03** | **Role Reveal** | Regular players read the secret word[cite: 1]. Imposters see their red alert badge with a subtle topic clue. |
-| **04** | **Hint Round** | A randomly selected player starts[cite: 1]. Everyone gives one clue around the circle. |
+| **01** | **Setup** | Pick total players (3 to 22) and imposter count (1 to 10). Type names. |
+| **02** | **Secret Hand-Off** | The game randomizes the player sequence. Pass the phone as each name is called. |
+| **03** | **Role Reveal** | Regular players read the secret word. Imposters see their red alert badge with a subtle topic clue. |
+| **04** | **Hint Round** | A randomly selected player starts. Everyone gives one clue around the circle. |
 | **05** | **The Vote** | The room debates, points fingers, and votes on who is bluffing! |
 | **06** | **Last Chance** | Caught imposter? Guess the exact word to steal victory from the jaws of defeat! |
 
