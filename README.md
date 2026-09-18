@@ -6,9 +6,16 @@
 
   **Trust no one. Listen closely. Spot the fake.**
 
-  A fast-paced, pass-and-play social deduction party game made to be played in person on a single phone! No downloads, no room codes, and no account setups needed just grab your group and pass the device around.
+  A fast-paced, pass-and-play social deduction party game made to be played in person on a single phone! No downloads, no room codes, and no account setups needed—just grab your group and pass the device around.
 
-  [🎮 Play Online Now](https://joelalmeida4972-netizen.github.io/Guess-the-Imposter/) · [Report Bug](https://github.com/joelalmeida4972-netizen/Guess-the-Imposter/issues) · [Request Features](https://github.com/joelalmeida4972-netizen/Guess-the-Imposter/issues)
+  <br />
+
+  [![Play Live](https://img.shields.io/badge/PLAY_NOW-LIVE_ON_WEB-E63946?style=for-the-badge&logo=googlechrome&logoColor=white)](https://joelalmeida4972-netizen.github.io/Guess-the-Imposter/)
+
+  <br />
+
+  **Direct Link:**  
+  👉 **[https://joelalmeida4972-netizen.github.io/Guess-the-Imposter/](https://joelalmeida4972-netizen.github.io/Guess-the-Imposter/)** 👈
 
   ---
 
@@ -20,6 +27,18 @@
 </div>
 
 <br />
+
+---
+
+## 🌐 Play Instantly in Your Browser
+
+You don't need to download or install anything:
+
+1. Open Chrome, Safari, or any browser on your mobile phone or PC.
+2. Visit: **[https://joelalmeida4972-netizen.github.io/Guess-the-Imposter/](https://joelalmeida4972-netizen.github.io/Guess-the-Imposter/)**
+3. Select your players and start passing the phone!
+
+> **Tip for Mobile:** Open the link in Chrome on your phone, tap the three dots (**⋮**) in the top right corner, and select **Add to Home screen** to play it like a fullscreen mobile app.
 
 ---
 
