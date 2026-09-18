@@ -1,0 +1,1390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Guess The Imposter</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    
+    #root {
+      width: 100%;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+  
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  
+  <script type="text/babel">
+    const WORD_BANK = [
+      { word: 'Laptop', hint: 'Electronics' },
+      { word: 'Mobile', hint: 'Gadget' },
+      { word: 'Camera', hint: 'Optics' },
+      { word: 'Television', hint: 'Screen' },
+      { word: 'Keyboard', hint: 'Typing' },
+      { word: 'Mouse', hint: 'Hardware' },
+      { word: 'Headphones', hint: 'Audio' },
+      { word: 'Bicycle', hint: 'Pedal' },
+      { word: 'Car', hint: 'Vehicle' },
+      { word: 'Bus', hint: 'Transport' },
+      { word: 'Train', hint: 'Wheels' },
+      { word: 'Airplane', hint: 'Aviation' },
+      { word: 'Motorcycle', hint: 'Engine' },
+      { word: 'Boat', hint: 'Watercraft' },
+      { word: 'Truck', hint: 'Cargo' },
+      { word: 'Pizza', hint: 'bread' },
+      { word: 'Burger', hint: 'fastfood' },
+      { word: 'Coffee', hint: 'Beverage' },
+      { word: 'Chocolate', hint: 'Dessert' },
+      { word: 'Ice Cream', hint: 'Dairy' },
+      { word: 'Sandwich', hint: 'Bread' },
+      { word: 'Donut', hint: 'Bakery' },
+      { word: 'Cake', hint: 'Sweet' },
+      { word: 'Apple', hint: 'Doctor' },
+      { word: 'Banana', hint: 'Fruit' },
+      { word: 'Orange', hint: 'Citrus' },
+      { word: 'Mango', hint: 'Tropical' },
+      { word: 'Strawberry', hint: 'seeds' },
+      { word: 'Watermelon', hint: 'Refreshing' },
+      { word: 'Pineapple', hint: 'fruit' },
+      { word: 'Beach', hint: 'Salt' },
+      { word: 'Mountain', hint: 'Altitude' },
+      { word: 'Airport', hint: 'Travel' },
+      { word: 'School', hint: 'Education' },
+      { word: 'Hospital', hint: 'Medical' },
+      { word: 'Library', hint: 'Books' },
+      { word: 'Park', hint: 'Outdoors' },
+      { word: 'Museum', hint: 'History' },
+      { word: 'Ocean', hint: 'Aquatic' },
+      { word: 'River', hint: 'Current' },
+      { word: 'Lake', hint: 'Water' },
+      { word: 'Forest', hint: 'Woodland' },
+      { word: 'Desert', hint: 'dry' },
+      { word: 'Valley', hint: 'Landscape' },
+      { word: 'Island', hint: 'Isolated' },
+      { word: 'Cave', hint: 'Dark' },
+      { word: 'Football', hint: 'Stadium' },
+      { word: 'Cricket', hint: 'Pitch' },
+      { word: 'Tennis', hint: 'Court' },
+      { word: 'Basketball', hint: 'Indoor' },
+      { word: 'Volleyball', hint: 'Net' },
+      { word: 'Badminton', hint: 'Racket' },
+      { word: 'Golf', hint: 'outdoor' },
+      { word: 'Guitar', hint: 'instrument' },
+      { word: 'Piano', hint: 'Keys' },
+      { word: 'Violin', hint: 'music' },
+      { word: 'Drum', hint: 'music' },
+      { word: 'Flute', hint: 'Wind' },
+      { word: 'Trumpet', hint: 'Marriage' },
+      { word: 'Harmonica', hint: 'Instrument' },
+      { word: 'Book', hint: 'Reading' },
+      { word: 'Pen', hint: 'Ink' },
+      { word: 'Pencil', hint: 'Graphite' },
+      { word: 'Paper', hint: 'Stationery' },
+      { word: 'Notebook', hint: 'Stationery' },
+      { word: 'Magazine', hint: 'Print' },
+      { word: 'Newspaper', hint: 'reading' },
+      { word: 'Chair', hint: 'Furniture' },
+      { word: 'Table', hint: 'Furniture' },
+      { word: 'Desk', hint: 'Workstation' },
+      { word: 'Bed', hint: 'night' },
+      { word: 'Sofa', hint: 'sit' },
+      { word: 'Cabinet', hint: 'Storage' },
+      { word: 'Shelf', hint: 'Organizer' },
+      { word: 'Clock', hint: 'Time' },
+      { word: 'Watch', hint: 'Wrist' },
+      { word: 'Calendar', hint: 'Dates' },
+      { word: 'Mirror', hint: 'Reflection' },
+      { word: 'Lamp', hint: 'Lighting' },
+      { word: 'Window', hint: 'Glass' },
+      { word: 'Picture', hint: 'Frame' },
+      { word: 'Rug', hint: 'Carpet' },
+      { word: 'Shoes', hint: 'wearable' },
+      { word: 'Socks', hint: 'cotton' },
+      { word: 'Hat', hint: 'shade' },
+      { word: 'Jacket', hint: 'Clothing' },
+      { word: 'Shirt', hint: 'buttons' },
+      { word: 'Pants', hint: 'Outfit' },
+      { word: 'Tie', hint: 'Formal' },
+      { word: 'Scarf', hint: 'Winter' },
+      { word: 'Backpack', hint: 'Luggage' },
+      { word: 'Wallet', hint: 'Money' },
+      { word: 'Purse', hint: 'Accessory' },
+      { word: 'Umbrella', hint: 'Shade' },
+      { word: 'Raincoat', hint: 'Waterproof' },
+      { word: 'Sunglasses', hint: 'protection' },
+      { word: 'Gloves', hint: 'wearable' },
+      { word: 'Boots', hint: 'Leather' },
+      { word: 'Tree', hint: 'Green' },
+      { word: 'Flower', hint: 'Flora' },
+      { word: 'Grass', hint: 'Lawn' },
+      { word: 'Cactus', hint: 'Desert' },
+      { word: 'Leaf', hint: 'Green' },
+      { word: 'Dog', hint: 'pet' },
+      { word: 'Cat', hint: 'pet' },
+      { word: 'Elephant', hint: 'Wildlife' },
+      { word: 'Lion', hint: 'Predator' },
+      { word: 'Tiger', hint: 'Carnivore' },
+      { word: 'Monkey', hint: 'Banana' },
+      { word: 'Bear', hint: 'Mammal' },
+      { word: 'Penguin', hint: 'Polar' },
+      { word: 'Bird', hint: 'Feathers' },
+      { word: 'Fish', hint: 'Aquatic' },
+      { word: 'Butterfly', hint: 'Insect' },
+      { word: 'Bee', hint: 'Honey' },
+      { word: 'Spider-Man', hint: 'Movie' },
+      { word: 'Snake', hint: 'Reptile' },
+      { word: 'Frog', hint: 'Amphibian' },
+      { word: 'Turtle', hint: 'Shell' },
+      { word: 'Sun', hint: 'Solar' },
+      { word: 'Moon', hint: 'Lunar' },
+      { word: 'Star', hint: 'Cosmic' },
+      { word: 'Cloud', hint: 'Sky' },
+      { word: 'Rain', hint: 'Weather' },
+      { word: 'Snow', hint: 'Frost' },
+      { word: 'Wind', hint: 'Breeze' },
+      { word: 'Thunder', hint: 'Rain' },
+      { word: 'Fire', hint: 'Hot' },
+      { word: 'Ice', hint: 'Cold' },
+      { word: 'Water', hint: 'Liquid' },
+      { word: 'Doctor', hint: 'Apple' },
+      { word: 'Teacher', hint: 'Classroom' },
+      { word: 'Police', hint: 'Badge' },
+      { word: 'Farmer', hint: 'Agriculture' },
+      { word: 'Chef', hint: 'Kitchen' },
+      { word: 'Pilot', hint: 'Cockpit' },
+      { word: 'Actor', hint: 'Cinema' },
+      { word: 'Musician', hint: 'Performer' },
+      { word: 'Restaurant', hint: 'Dining' },
+      { word: 'Gym', hint: 'Fitness' },
+      { word: 'Cinema', hint: 'Movies' },
+      { word: 'Theater', hint: 'Stage' },
+      { word: 'Refrigerator', hint: 'Appliance' },
+      { word: 'Microwave', hint: 'Kitchenware' },
+      { word: 'Oven', hint: 'Baking' },
+      { word: 'Skateboard', hint: 'Wheels' },
+      { word: 'Scooter', hint: 'Commute' },
+      { word: 'Coconut', hint: 'Tropical' },
+      { word: 'Coconut', hint: 'Tropical' },
+      { word: 'Popcorn', hint: 'Cinema' },
+      { word: 'Fries', hint: 'Crispy' },
+      { word: 'Noodles', hint: 'Slurping' },
+      { word: 'Pancake', hint: 'Breakfast' },
+      { word: 'Waffle', hint: 'Grid' },
+      { word: 'Sushi', hint: 'Roll' },
+      { word: 'Taco', hint: 'Mexican' },
+      { word: 'Biryani', hint: 'Spicy' },
+      { word: 'Pasta', hint: 'Italian' },
+      { word: 'Cheese', hint: 'Melted' },
+      { word: 'Cookie', hint: 'Crunchy' },
+      { word: 'Ketchup', hint: 'Sauce' },
+      { word: 'Honey', hint: 'Sweet' },
+      { word: 'Lemon', hint: 'Sour' },
+      { word: 'Grapes', hint: 'Vine' },
+      { word: 'Papaya', hint: 'Seeds' },
+      { word: 'Guava', hint: 'Green' },
+      { word: 'Peach', hint: 'Fuzzy' },
+      { word: 'Cherry', hint: 'Red' },
+      { word: 'Kiwi', hint: 'Furry' },
+      { word: 'Avocado', hint: 'Creamy' },
+      { word: 'Carrot', hint: 'Orange' },
+      { word: 'Potato', hint: 'Starch' },
+      { word: 'Tomato', hint: 'Saucy' },
+      { word: 'Onion', hint: 'Tears' },
+      { word: 'Garlic', hint: 'Aroma' },
+      { word: 'Chilli', hint: 'Spicy' },
+      { word: 'Ginger', hint: 'Root' },
+      { word: 'Milkshake', hint: 'Straw' },
+      { word: 'Lollipop', hint: 'Stick' },
+      { word: 'Candy', hint: 'Sweet' },
+      { word: 'Marshmallow', hint: 'Soft' },
+      { word: 'Fireworks', hint: 'Explosion' },
+      { word: 'Candle', hint: 'Flame' },
+      { word: 'Balloon', hint: 'Floating' },
+      { word: 'Kite', hint: 'String' },
+      { word: 'Puzzle', hint: 'Pieces' },
+      { word: 'Dice', hint: 'Six' },
+      { word: 'Cards', hint: 'Deck' },
+      { word: 'Chess', hint: 'Strategy' },
+      { word: 'Ludo', hint: 'Tokens' },
+      { word: 'Monopoly', hint: 'Property' },
+      { word: 'Rubik Cube', hint: 'Colors' },
+      { word: 'Yo-Yo', hint: 'String' },
+      { word: 'Teddy Bear', hint: 'Cuddly' },
+      { word: 'Doll', hint: 'Toy' },
+      { word: 'Robot', hint: 'Machine' },
+      { word: 'Drone', hint: 'Flying' },
+      { word: 'Joystick', hint: 'Gaming' },
+      { word: 'Controller', hint: 'Buttons' },
+      { word: 'PlayStation', hint: 'Console' },
+      { word: 'Xbox', hint: 'Gaming' },
+      { word: 'Minecraft', hint: 'Blocks' },
+      { word: 'Fortnite', hint: 'Battle' },
+      { word: 'Among Us', hint: 'Crew' },
+      { word: 'Pac-Man', hint: 'Maze' },
+      { word: 'Mario', hint: 'Plumber' },
+      { word: 'Pokémon', hint: 'Trainer' },
+      { word: 'Superhero', hint: 'Cape' },
+      { word: 'Villain', hint: 'Evil' },
+      { word: 'Pirate', hint: 'Treasure' },
+      { word: 'Ninja', hint: 'Stealth' },
+      { word: 'Wizard', hint: 'Magic' },
+      { word: 'Vampire', hint: 'Fangs' },
+      { word: 'Zombie', hint: 'Undead' },
+      { word: 'Ghost', hint: 'Haunted' },
+      { word: 'Alien', hint: 'Space' },
+      { word: 'Dragon', hint: 'Mythical' },
+      { word: 'Mermaid', hint: 'Underwater' },
+      { word: 'Dinosaur', hint: 'Fossil' },
+      { word: 'Shark', hint: 'Fins' },
+      { word: 'Whale', hint: 'Giant' },
+      { word: 'Dolphin', hint: 'Intelligent' },
+      { word: 'Octopus', hint: 'Tentacles' },
+      { word: 'Jellyfish', hint: 'Sting' },
+      { word: 'Crocodile', hint: 'Swamp' },
+      { word: 'Giraffe', hint: 'Tall' },
+      { word: 'Zebra', hint: 'Stripes' },
+      { word: 'Kangaroo', hint: 'Pouch' },
+      { word: 'Panda', hint: 'Bamboo' },
+      { word: 'Koala', hint: 'Eucalyptus' },
+      { word: 'Peacock', hint: 'Feathers' },
+      { word: 'Parrot', hint: 'Talking' },
+      { word: 'Eagle', hint: 'Soaring' },
+      { word: 'Owl', hint: 'Nocturnal' },
+      { word: 'Ant', hint: 'Tiny' },
+      { word: 'Mosquito', hint: 'Itchy' },
+      { word: 'Ladybug', hint: 'Spots' },
+      { word: 'Firefly', hint: 'Glow' },
+      { word: 'Rainbow', hint: 'Colors' },
+      { word: 'Lightning', hint: 'Electric' },
+      { word: 'Volcano', hint: 'Lava' },
+      { word: 'Earthquake', hint: 'Shaking' },
+      { word: 'Tornado', hint: 'Spinning' },
+      { word: 'Hurricane', hint: 'Storm' },
+      { word: 'Sunset', hint: 'Evening' },
+      { word: 'Sunrise', hint: 'Morning' },
+      { word: 'Galaxy', hint: 'Stars' },
+      { word: 'Planet', hint: 'Orbit' },
+      { word: 'Rocket', hint: 'Launch' },
+      { word: 'Astronaut', hint: 'Helmet' },
+      { word: 'Moonlight', hint: 'Night' },
+      { word: 'Compass', hint: 'Direction' },
+      { word: 'Map', hint: 'Navigation' },
+      { word: 'Treasure', hint: 'Hidden' },
+      { word: 'Castle', hint: 'Kingdom' },
+      { word: 'Bridge', hint: 'Crossing' },
+      { word: 'Tunnel', hint: 'Underground' },
+      { word: 'Lighthouse', hint: 'Coast' },
+      { word: 'Waterfall', hint: 'Falling' },
+      { word: 'Camping', hint: 'Tent' },
+      { word: 'Bonfire', hint: 'Warmth' },
+      { word: 'Picnic', hint: 'Basket' },
+      { word: 'Temple', hint: 'Architecture' },
+      { word: 'Skyscraper', hint: 'Tall' },
+      { word: 'Stadium', hint: 'Crowd' },
+      { word: 'Market', hint: 'Shopping' },
+      { word: 'Supermarket', hint: 'Groceries' },
+      { word: 'Hotel', hint: 'Stay' },
+      { word: 'Prison', hint: 'Cells' },
+      { word: 'Bank', hint: 'Vault' },
+      { word: 'Post Office', hint: 'Mail' },
+      { word: 'Train Station', hint: 'Platform' },
+      { word: 'Subway', hint: 'Underground' },
+      { word: 'Traffic Light', hint: 'Signal' },
+      { word: 'Crosswalk', hint: 'Pedestrians' },
+      { word: 'Elevator', hint: 'Floor' },
+      { word: 'Escalator', hint: 'Moving' },
+      { word: 'Helmet', hint: 'Safety' },
+      { word: 'Toothbrush', hint: 'Morning' },
+      { word: 'Toothpaste', hint: 'Mint' },
+      { word: 'Soap', hint: 'Bubbles' },
+      { word: 'Towel', hint: 'Dry' },
+      { word: 'Comb', hint: 'Hair' },
+      { word: 'Perfume', hint: 'Fragrance' },
+      { word: 'Suitcase', hint: 'Travel' },
+      { word: 'Key', hint: 'Lock' },
+      { word: 'Lock', hint: 'Security' },
+      { word: 'Flashlight', hint: 'Darkness' },
+      { word: 'Battery', hint: 'Power' },
+      { word: 'Charger', hint: 'Energy' },
+      { word: 'Remote', hint: 'Control' },
+      { word: 'Calculator', hint: 'Numbers' },
+      { word: 'Printer', hint: 'Paper' },
+      { word: 'Scanner', hint: 'Copy' },
+      { word: 'Microphone', hint: 'Voice' },
+      { word: 'Speaker', hint: 'Sound' },
+      { word: 'Projector', hint: 'Display' },
+      { word: 'Wi-Fi', hint: 'Internet' },
+      { word: 'Password', hint: 'Secret' },
+      { word: 'Website', hint: 'Browser' },
+      { word: 'Emoji', hint: 'Expression' },
+      { word: 'Meme', hint: 'Internet' },
+      { word: 'Selfie', hint: 'Camera' },
+      { word: 'Alarm', hint: 'Wakeup' },
+      { word: 'Passport', hint: 'Travel' },
+      { word: 'Ticket', hint: 'Entry' },
+      { word: 'Vacation', hint: 'Holiday' },
+      { word: 'Adventure', hint: 'Excitement' },
+      { word: 'Treasure Hunt', hint: 'Clues' },
+      { word: 'Escape Room', hint: 'Puzzle' },
+      { word: 'Roller Coaster', hint: 'Thrill' },
+      { word: 'Ferris Wheel', hint: 'Height' },
+      { word: 'Amusement Park', hint: 'Rides' },
+      { word: 'Magic Show', hint: 'Illusion' },
+      { word: 'Karaoke', hint: 'Singing' },
+      { word: 'Concert', hint: 'Audience' },
+      { word: 'Dance', hint: 'Rhythm' },
+      { word: 'Photography', hint: 'Moment' },
+      { word: 'Graffiti', hint: 'Walls' },
+      { word: 'Sleeping Bag', hint: 'Camping' },
+      { word: 'Hammock', hint: 'Relaxation' },
+      { word: 'Surfboard', hint: 'Waves' },
+      { word: 'Swimming Pool', hint: 'Chlorine' },
+      { word: 'Scuba Diving', hint: 'Oxygen' },
+      { word: 'Parachute', hint: 'Falling' },
+      { word: 'Skating', hint: 'Balance' },
+      { word: 'Boxing', hint: 'Gloves' },
+      { word: 'Marathon', hint: 'Running' },
+      { word: 'Yoga', hint: 'Stretching' },
+      { word: 'Trophy', hint: 'Winner' },
+      { word: 'Medal', hint: 'Achievement' },
+      { word: 'Referee', hint: 'Whistle' },
+
+     
+    ];
+
+    function GuessTheImposter() {
+      // Naturally opens in dark theme
+      const [theme, setTheme] = React.useState('dark');
+      const [screen, setScreen] = React.useState('home');
+      const [playerCount, setPlayerCount] = React.useState(5);
+      const [playerNames, setPlayerNames] = React.useState(Array(5).fill(''));
+      const [imposterCount, setImposterCount] = React.useState(1);
+      
+      const [gameState, setGameState] = React.useState(null);
+      const [revealStep, setRevealStep] = React.useState(0);
+      const [shuffledOrder, setShuffledOrder] = React.useState([]);
+      const [startingSpeakerIndex, setStartingSpeakerIndex] = React.useState(null);
+      
+      const [selectedImposters, setSelectedImposters] = React.useState([]);
+      const [imposterGuess, setImposterGuess] = React.useState('');
+      const [imposterGuessResult, setImposterGuessResult] = React.useState(null);
+
+      const themes = {
+        dark: {
+          bg: '#121212',
+          text: '#ffffff',
+          secondary: '#a0a0a0',
+          card: '#1e1e1e',
+          accent: '#e63946',
+          success: '#2a9d8f',
+          border: '#2e2e2e',
+          buttonBg: '#1e1e1e',
+          logoPlate: 'radial-gradient(circle, rgba(255,255,255,0.06) 0%, rgba(26,26,28,0.95) 75%)',
+          logoGlow: '0 10px 32px rgba(230, 57, 70, 0.22), 0 0 0 1px rgba(255, 255, 255, 0.12)'
+        },
+        light: {
+          bg: '#ffffff',
+          text: '#121212',
+          secondary: '#666666',
+          card: '#f8f9fa',
+          accent: '#e63946',
+          success: '#2a9d8f',
+          border: '#e2e8f0',
+          buttonBg: '#f1f5f9',
+          logoPlate: '#ffffff',
+          logoGlow: '0 8px 30px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(0, 0, 0, 0.06)'
+        }
+      };
+
+      const currentTheme = themes[theme];
+
+      const handlePlayerCountChange = (num) => {
+        setPlayerCount(num);
+        setPlayerNames(prev => {
+          if (prev.length === num) return prev;
+          if (prev.length < num) {
+            return [...prev, ...Array(num - prev.length).fill('')];
+          }
+          return prev.slice(0, num);
+        });
+        const maxAllowed = Math.max(1, Math.min(10, num - 2));
+        if (imposterCount > maxAllowed) {
+          setImposterCount(maxAllowed);
+        }
+      };
+
+      const handlePlayerNameChange = (idx, value) => {
+        setPlayerNames(prev => {
+          const next = [...prev];
+          next[idx] = value;
+          return next;
+        });
+      };
+
+      const getRandomItem = () => WORD_BANK[Math.floor(Math.random() * WORD_BANK.length)];
+
+      const getRandomImposters = (count) => {
+        const indices = Array.from({ length: playerCount }, (_, i) => i);
+        const selected = [];
+        for (let i = 0; i < count; i++) {
+          const randomIdx = Math.floor(Math.random() * indices.length);
+          selected.push(indices[randomIdx]);
+          indices.splice(randomIdx, 1);
+        }
+        return selected;
+      };
+
+      const shuffleArray = (arr) => {
+        const copy = [...arr];
+        for (let i = copy.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [copy[i], copy[j]] = [copy[j], copy[i]];
+        }
+        return copy;
+      };
+
+      const startGame = () => {
+        const item = getRandomItem();
+        const imposters = getRandomImposters(imposterCount);
+        const order = shuffleArray(Array.from({ length: playerCount }, (_, i) => i));
+        const randomSpeaker = Math.floor(Math.random() * playerCount);
+        
+        setGameState({
+          word: item.word,
+          hint: item.hint,
+          imposters,
+          revealedIndices: new Set(),
+          currentPhase: 'reveal',
+          votes: []
+        });
+        
+        setShuffledOrder(order);
+        setRevealStep(0);
+        setStartingSpeakerIndex(randomSpeaker);
+        setSelectedImposters([]);
+        setImposterGuess('');
+        setImposterGuessResult(null);
+        setScreen('roleReveal');
+      };
+
+      const canContinueNames = () => {
+        const nonEmpty = playerNames.filter(n => n && n.trim()).length === playerCount;
+        const unique = new Set(playerNames.map(n => (n || '').trim().toLowerCase())).size === playerCount;
+        return nonEmpty && unique && playerCount >= 3;
+      };
+
+      const maxImpostersAllowed = Math.max(1, Math.min(10, playerCount - 2));
+
+      const handleBackNavigation = () => {
+        if (screen === 'howToPlay' || screen === 'playerCount') {
+          setScreen('home');
+        } else if (screen === 'playerNames') {
+          setScreen('playerCount');
+        } else if (screen === 'imposterCount') {
+          setScreen('playerNames');
+        } else if (screen === 'roleReveal') {
+          if (!gameState) {
+            setScreen('home');
+            return;
+          }
+          if (gameState.currentPhase === 'reveal') {
+            if (revealStep > 0) {
+              setRevealStep(revealStep - 1);
+            } else {
+              setScreen('imposterCount');
+            }
+          } else if (gameState.currentPhase === 'hints') {
+            setGameState({ ...gameState, currentPhase: 'reveal' });
+            setRevealStep(playerCount - 1);
+          } else if (gameState.currentPhase === 'voting') {
+            setGameState({ ...gameState, currentPhase: 'hints' });
+          } else if (gameState.currentPhase === 'results') {
+            if (imposterGuessResult !== null) {
+              setImposterGuessResult(null);
+            } else {
+              setGameState({ ...gameState, currentPhase: 'voting' });
+            }
+          }
+        }
+      };
+
+      return (
+        <div style={{
+          backgroundColor: currentTheme.bg,
+          color: currentTheme.text,
+          minHeight: '100vh',
+          fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+          transition: 'background-color 0.2s ease, color 0.2s ease'
+        }}>
+          {/* Top Bar with Back Button and Theme Switcher */}
+          <div style={{
+            padding: '16px 20px',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center'
+          }}>
+            <div>
+              {screen !== 'home' ? (
+                <button
+                  onClick={handleBackNavigation}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '6px',
+                    padding: '8px 14px',
+                    fontSize: '14px',
+                    fontWeight: 'bold',
+                    backgroundColor: currentTheme.buttonBg,
+                    color: currentTheme.text,
+                    border: `1px solid ${currentTheme.border}`,
+                    borderRadius: '8px',
+                    cursor: 'pointer'
+                  }}
+                >
+                  ← Back
+                </button>
+              ) : <div />}
+            </div>
+
+            <button
+              onClick={() => setTheme(prev => prev === 'dark' ? 'light' : 'dark')}
+              style={{
+                padding: '8px 16px',
+                fontSize: '14px',
+                fontWeight: '600',
+                backgroundColor: currentTheme.buttonBg,
+                color: currentTheme.text,
+                border: `1px solid ${currentTheme.border}`,
+                borderRadius: '8px',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px'
+              }}
+            >
+              {theme === 'dark' ? '☀ Light Theme' : '🌙 Dark Theme'}
+            </button>
+          </div>
+
+          {/* HOME SCREEN WITH LOGO */}
+          {screen === 'home' && (
+            <div style={{ textAlign: 'center', padding: '20px 20px 40px 20px' }}>
+              
+              {/* Logo Presentation Shield */}
+              <div style={{
+                display: 'inline-block',
+                background: currentTheme.logoPlate,
+                borderRadius: '24px',
+                padding: '24px 28px 16px 28px',
+                boxShadow: currentTheme.logoGlow,
+                marginBottom: '20px',
+                transition: 'all 0.3s ease'
+              }}>
+                <img 
+                  src="logo.png" 
+                  alt="Guess The Imposter Logo" 
+                  style={{
+                    width: '100%',
+                    maxWidth: '260px',
+                    height: 'auto',
+                    display: 'block',
+                    margin: '0 auto',
+                    filter: theme === 'dark' ? 'drop-shadow(0 0 14px rgba(255, 255, 255, 0.16))' : 'none'
+                  }}
+                  onError={(e) => {
+                    e.target.style.display = 'none';
+                    document.getElementById('fallback-title').style.display = 'block';
+                  }}
+                />
+                <h1 id="fallback-title" style={{ display: 'none', fontSize: '42px', fontWeight: '900', color: currentTheme.accent, margin: 0 }}>
+                  GUESS THE IMPOSTER
+                </h1>
+              </div>
+
+              <p style={{ fontSize: '18px', color: currentTheme.secondary, marginBottom: '40px', maxWidth: '400px', margin: '0 auto 40px auto' }}>
+                Can you find the player who doesn't know the word?
+              </p>
+              
+              <button
+                onClick={() => setScreen('playerCount')}
+                style={{
+                  width: '100%',
+                  maxWidth: '320px',
+                  padding: '18px',
+                  fontSize: '18px',
+                  fontWeight: 'bold',
+                  backgroundColor: currentTheme.accent,
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '10px',
+                  cursor: 'pointer',
+                  marginBottom: '14px'
+                }}
+              >
+                START GAME
+              </button>
+              
+              <button
+                onClick={() => setScreen('howToPlay')}
+                style={{
+                  width: '100%',
+                  maxWidth: '320px',
+                  padding: '16px',
+                  fontSize: '16px',
+                  fontWeight: '600',
+                  backgroundColor: currentTheme.card,
+                  color: currentTheme.text,
+                  border: `2px solid ${currentTheme.border}`,
+                  borderRadius: '10px',
+                  cursor: 'pointer',
+                  display: 'block',
+                  margin: '0 auto'
+                }}
+              >
+                How To Play
+              </button>
+            </div>
+          )}
+
+          {/* HOW TO PLAY */}
+          {screen === 'howToPlay' && (
+            <div style={{ padding: '20px', maxWidth: '600px', margin: '0 auto' }}>
+              <h2 style={{ color: currentTheme.accent, marginBottom: '24px', fontSize: '28px' }}>How To Play</h2>
+              
+              <div style={{ marginBottom: '20px' }}>
+                <h3 style={{ color: currentTheme.text, fontSize: '18px', marginBottom: '4px' }}>Step 1 — Choose Players & Names</h3>
+                <p style={{ color: currentTheme.secondary, fontSize: '15px', lineHeight: '1.5' }}>Choose 3 to 22 players and up to 10 imposters. Enter everyone's names.</p>
+              </div>
+              
+              <div style={{ marginBottom: '20px' }}>
+                <h3 style={{ color: currentTheme.text, fontSize: '18px', marginBottom: '4px' }}>Step 2 — Random Phone Hand-off</h3>
+                <p style={{ color: currentTheme.secondary, fontSize: '15px', lineHeight: '1.5' }}>Names appear randomly one by one. Hand the device to the player named on screen.</p>
+              </div>
+              
+              <div style={{ marginBottom: '20px' }}>
+                <h3 style={{ color: currentTheme.text, fontSize: '18px', marginBottom: '4px' }}>Step 3 — Roles & Hints</h3>
+                <p style={{ color: currentTheme.secondary, fontSize: '15px', lineHeight: '1.5' }}>Innocents see the secret word in green. Imposters see their role in red with a subtle clue below to help them blend in.</p>
+              </div>
+              
+              <div style={{ marginBottom: '30px' }}>
+                <h3 style={{ color: currentTheme.text, fontSize: '18px', marginBottom: '4px' }}>Step 4 — Discussion & Voting</h3>
+                <p style={{ color: currentTheme.secondary, fontSize: '15px', lineHeight: '1.5' }}>A random player starts giving clues first. Go around the room, then cast votes on who is bluffing!</p>
+              </div>
+              
+              <button
+                onClick={() => setScreen('playerCount')}
+                style={{
+                  width: '100%',
+                  padding: '16px',
+                  fontSize: '17px',
+                  fontWeight: 'bold',
+                  backgroundColor: currentTheme.accent,
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '10px',
+                  cursor: 'pointer'
+                }}
+              >
+                PLAY NOW
+              </button>
+            </div>
+          )}
+
+          {/* PLAYER COUNT SELECTION */}
+          {screen === 'playerCount' && (
+            <div style={{ textAlign: 'center', padding: '20px', maxWidth: '520px', margin: '0 auto' }}>
+              <h2 style={{ color: currentTheme.accent, marginBottom: '8px', fontSize: '26px' }}>SELECT PLAYERS</h2>
+              <p style={{ color: currentTheme.secondary, marginBottom: '25px', fontSize: '15px' }}>
+                Choose total number of players (3 - 22)
+              </p>
+              
+              <div style={{ 
+                display: 'grid', 
+                gridTemplateColumns: 'repeat(5, 1fr)', 
+                gap: '10px', 
+                marginBottom: '35px' 
+              }}>
+                {Array.from({ length: 20 }, (_, i) => i + 3).map((num) => {
+                  const isSelected = playerCount === num;
+                  return (
+                    <button
+                      key={num}
+                      onClick={() => handlePlayerCountChange(num)}
+                      style={{
+                        padding: '12px 0',
+                        fontSize: '18px',
+                        fontWeight: 'bold',
+                        backgroundColor: isSelected ? currentTheme.accent : currentTheme.card,
+                        color: isSelected ? 'white' : currentTheme.text,
+                        border: `2px solid ${isSelected ? currentTheme.accent : currentTheme.border}`,
+                        borderRadius: '8px',
+                        cursor: 'pointer',
+                        transition: 'all 0.1s ease'
+                      }}
+                    >
+                      {isSelected ? `✓ ${num}` : num}
+                    </button>
+                  );
+                })}
+              </div>
+              
+              <button
+                onClick={() => setScreen('playerNames')}
+                style={{
+                  width: '100%',
+                  padding: '16px',
+                  fontSize: '18px',
+                  fontWeight: 'bold',
+                  backgroundColor: currentTheme.accent,
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '10px',
+                  cursor: 'pointer'
+                }}
+              >
+                CONTINUE ({playerCount} PLAYERS)
+              </button>
+            </div>
+          )}
+
+          {/* PLAYER NAMES INPUT */}
+          {screen === 'playerNames' && (
+            <div style={{ padding: '20px', maxWidth: '500px', margin: '0 auto' }}>
+              <h2 style={{ color: currentTheme.accent, marginBottom: '20px', textAlign: 'center', fontSize: '26px' }}>ENTER PLAYER NAMES</h2>
+              
+              <div>
+                {playerNames.map((name, idx) => (
+                  <div key={idx} style={{ marginBottom: '12px' }}>
+                    <label style={{ display: 'block', marginBottom: '6px', fontSize: '14px', color: currentTheme.text }}>
+                      Player {idx + 1}
+                    </label>
+                    <input
+                      type="text"
+                      value={name}
+                      onChange={(e) => handlePlayerNameChange(idx, e.target.value)}
+                      placeholder={`Player ${idx + 1} Name`}
+                      style={{
+                        width: '100%',
+                        padding: '12px 14px',
+                        fontSize: '16px',
+                        backgroundColor: currentTheme.card,
+                        color: currentTheme.text,
+                        border: `1.5px solid ${currentTheme.border}`,
+                        borderRadius: '8px',
+                        boxSizing: 'border-box'
+                      }}
+                    />
+                  </div>
+                ))}
+              </div>
+              
+              {playerNames.filter(n => n && n.trim()).length !== playerCount && (
+                <p style={{ color: '#ff6b6b', marginTop: '10px', fontSize: '14px', textAlign: 'center' }}>
+                  Please fill in all player names.
+                </p>
+              )}
+              
+              {new Set(playerNames.map(n => (n || '').trim().toLowerCase())).size !== playerCount && playerNames.filter(n => n && n.trim()).length === playerCount && (
+                <p style={{ color: '#ff6b6b', marginTop: '10px', fontSize: '14px', textAlign: 'center' }}>
+                  All names must be unique.
+                </p>
+              )}
+              
+              <button
+                onClick={() => setScreen('imposterCount')}
+                disabled={!canContinueNames()}
+                style={{
+                  width: '100%',
+                  padding: '16px',
+                  fontSize: '18px',
+                  fontWeight: 'bold',
+                  backgroundColor: canContinueNames() ? currentTheme.accent : currentTheme.border,
+                  color: canContinueNames() ? 'white' : currentTheme.secondary,
+                  border: 'none',
+                  borderRadius: '10px',
+                  cursor: canContinueNames() ? 'pointer' : 'not-allowed',
+                  marginTop: '20px',
+                  marginBottom: '40px'
+                }}
+              >
+                CONTINUE
+              </button>
+            </div>
+          )}
+
+          {/* IMPOSTER COUNT SELECTION */}
+          {screen === 'imposterCount' && (
+            <div style={{ textAlign: 'center', padding: '20px', maxWidth: '520px', margin: '0 auto' }}>
+              <h2 style={{ color: currentTheme.accent, marginBottom: '8px', fontSize: '26px' }}>HOW MANY IMPOSTERS?</h2>
+              <p style={{ color: currentTheme.secondary, marginBottom: '25px', fontSize: '15px' }}>
+                Select between 1 and 10 imposters
+              </p>
+              
+              <div style={{ 
+                display: 'grid', 
+                gridTemplateColumns: 'repeat(5, 1fr)', 
+                gap: '10px', 
+                marginBottom: '25px' 
+              }}>
+                {Array.from({ length: 10 }, (_, i) => i + 1).map((num) => {
+                  const isSelected = imposterCount === num;
+                  const isDisabled = num > maxImpostersAllowed;
+                  
+                  return (
+                    <button
+                      key={num}
+                      disabled={isDisabled}
+                      onClick={() => setImposterCount(num)}
+                      style={{
+                        padding: '14px 0',
+                        fontSize: '18px',
+                        fontWeight: 'bold',
+                        backgroundColor: isSelected ? currentTheme.accent : currentTheme.card,
+                        color: isSelected ? 'white' : (isDisabled ? currentTheme.secondary : currentTheme.text),
+                        border: `2px solid ${isSelected ? currentTheme.accent : currentTheme.border}`,
+                        borderRadius: '8px',
+                        cursor: isDisabled ? 'not-allowed' : 'pointer',
+                        opacity: isDisabled ? 0.3 : 1,
+                        transition: 'all 0.15s'
+                      }}
+                    >
+                      {isSelected ? `✓ ${num}` : num}
+                    </button>
+                  );
+                })}
+              </div>
+              
+              <p style={{ color: currentTheme.secondary, marginBottom: '30px', fontSize: '14px' }}>
+                Max allowed for {playerCount} players: <strong>{maxImpostersAllowed}</strong> imposter{maxImpostersAllowed !== 1 ? 's' : ''}
+              </p>
+              
+              <button
+                onClick={startGame}
+                style={{
+                  width: '100%',
+                  padding: '16px',
+                  fontSize: '18px',
+                  fontWeight: 'bold',
+                  backgroundColor: currentTheme.accent,
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '10px',
+                  cursor: 'pointer'
+                }}
+              >
+                START GAME
+              </button>
+            </div>
+          )}
+
+          {/* ROLE REVEAL SCREEN */}
+          {screen === 'roleReveal' && gameState && gameState.currentPhase === 'reveal' && (() => {
+            const currentPlayerIndex = shuffledOrder[revealStep];
+            const currentPlayer = playerNames[currentPlayerIndex];
+            const isRevealed = gameState.revealedIndices.has(currentPlayerIndex);
+            const isImposter = gameState.imposters.includes(currentPlayerIndex);
+
+            if (!isRevealed) {
+              return (
+                <div style={{ textAlign: 'center', padding: '30px 20px', maxWidth: '500px', margin: '0 auto' }}>
+                  <p style={{ color: currentTheme.secondary, fontSize: '13px', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '8px' }}>
+                    Player {revealStep + 1} of {playerCount}
+                  </p>
+                  <h2 style={{ color: currentTheme.text, marginBottom: '25px', fontSize: '28px' }}>PASS THE PHONE</h2>
+                  
+                  <div style={{
+                    backgroundColor: currentTheme.card,
+                    padding: '35px 20px',
+                    borderRadius: '12px',
+                    marginBottom: '25px',
+                    border: `2px dashed ${currentTheme.accent}`
+                  }}>
+                    <p style={{ color: currentTheme.secondary, marginBottom: '10px', fontSize: '15px' }}>
+                      Hand the device to:
+                    </p>
+                    <h3 style={{ color: currentTheme.accent, fontSize: '38px', margin: 0, fontWeight: '900' }}>
+                      {currentPlayer}
+                    </h3>
+                  </div>
+                  
+                  <p style={{ color: currentTheme.secondary, marginBottom: '30px', fontSize: '14px' }}>
+                    Only <strong>{currentPlayer}</strong> should look at the screen!
+                  </p>
+                  
+                  <button
+                    onClick={() => {
+                      const newSet = new Set(gameState.revealedIndices);
+                      newSet.add(currentPlayerIndex);
+                      setGameState({ ...gameState, revealedIndices: newSet });
+                    }}
+                    style={{
+                      width: '100%',
+                      maxWidth: '320px',
+                      padding: '16px',
+                      fontSize: '18px',
+                      fontWeight: 'bold',
+                      backgroundColor: currentTheme.accent,
+                      color: 'white',
+                      border: 'none',
+                      borderRadius: '10px',
+                      cursor: 'pointer'
+                    }}
+                  >
+                    I'M {currentPlayer.toUpperCase()} (REVEAL)
+                  </button>
+                </div>
+              );
+            }
+
+            return (
+              <div style={{ textAlign: 'center', padding: '30px 20px', maxWidth: '500px', margin: '0 auto' }}>
+                <div style={{
+                  backgroundColor: currentTheme.card,
+                  padding: '40px 20px',
+                  borderRadius: '12px',
+                  border: `2px solid ${isImposter ? currentTheme.accent : currentTheme.success}`
+                }}>
+                  {isImposter ? (
+                    <>
+                      <h2 style={{ color: currentTheme.accent, fontSize: '34px', marginBottom: '8px', fontWeight: '900' }}>
+                        YOU ARE THE IMPOSTER
+                      </h2>
+                      
+                      <div style={{ margin: '14px 0 20px 0' }}>
+                        <span style={{ fontSize: '12px', color: currentTheme.secondary, display: 'block', textTransform: 'uppercase', letterSpacing: '1px' }}>
+                          Topic Hint
+                        </span>
+                        <span style={{ color: currentTheme.success, fontSize: '18px', fontWeight: '700' }}>
+                          {gameState.hint}
+                        </span>
+                      </div>
+
+                      <p style={{ color: currentTheme.secondary, fontSize: '14px', lineHeight: '1.5' }}>
+                        You do not know the exact word.<br/>Blend in and give a believable clue!
+                      </p>
+                    </>
+                  ) : (
+                    <>
+                      <p style={{ color: currentTheme.secondary, marginBottom: '10px', letterSpacing: '1px', fontSize: '14px' }}>
+                        THE WORD IS
+                      </p>
+                      <h2 style={{ color: currentTheme.success, fontSize: '46px', marginBottom: '18px', fontWeight: '900' }}>
+                        {gameState.word}
+                      </h2>
+                      <p style={{ color: currentTheme.secondary, fontSize: '14px' }}>
+                        Remember your word. Don't make clues too obvious!
+                      </p>
+                    </>
+                  )}
+                </div>
+                
+                <button
+                  onClick={() => {
+                    if (revealStep < playerCount - 1) {
+                      setRevealStep(revealStep + 1);
+                    } else {
+                      setGameState({ ...gameState, currentPhase: 'hints' });
+                    }
+                  }}
+                  style={{
+                    width: '100%',
+                    maxWidth: '300px',
+                    padding: '16px',
+                    fontSize: '17px',
+                    fontWeight: 'bold',
+                    backgroundColor: currentTheme.accent,
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '10px',
+                    cursor: 'pointer',
+                    marginTop: '25px'
+                  }}
+                >
+                  {revealStep < playerCount - 1 ? 'HIDE & PASS PHONE' : 'FINISHED REVEALING'}
+                </button>
+              </div>
+            );
+          })()}
+
+          {/* HINT ROUND SCREEN */}
+          {screen === 'roleReveal' && gameState && gameState.currentPhase === 'hints' && (
+            <div style={{ textAlign: 'center', padding: '30px 20px', maxWidth: '500px', margin: '0 auto' }}>
+              <h2 style={{ color: currentTheme.accent, marginBottom: '15px', fontSize: '28px' }}>HINT DISCUSSION</h2>
+              
+              <div style={{
+                backgroundColor: currentTheme.card,
+                padding: '28px 20px',
+                borderRadius: '12px',
+                marginBottom: '25px',
+                border: `2px solid ${currentTheme.accent}`
+              }}>
+                <p style={{ color: currentTheme.secondary, marginBottom: '8px', fontSize: '13px', textTransform: 'uppercase' }}>
+                  Starting Speaker (Random):
+                </p>
+                <h3 style={{ color: currentTheme.accent, fontSize: '36px', margin: 0, fontWeight: '900' }}>
+                  {playerNames[startingSpeakerIndex]}
+                </h3>
+              </div>
+              
+              <div style={{
+                backgroundColor: currentTheme.card,
+                padding: '20px',
+                borderRadius: '10px',
+                marginBottom: '30px',
+                textAlign: 'left'
+              }}>
+                <p style={{ color: currentTheme.text, fontSize: '14px', lineHeight: '1.7' }}>
+                  1. <strong>{playerNames[startingSpeakerIndex]}</strong> gives their short clue first.<br/>
+                  2. Continue speaking around the group.<br/>
+                  3. Discuss suspicions and proceed to voting!
+                </p>
+              </div>
+              
+              <button
+                onClick={() => setGameState({ ...gameState, currentPhase: 'voting' })}
+                style={{
+                  width: '100%',
+                  maxWidth: '300px',
+                  padding: '16px',
+                  fontSize: '18px',
+                  fontWeight: 'bold',
+                  backgroundColor: currentTheme.accent,
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '10px',
+                  cursor: 'pointer'
+                }}
+              >
+                START VOTING
+              </button>
+            </div>
+          )}
+
+          {/* VOTING SCREEN */}
+          {screen === 'roleReveal' && gameState && gameState.currentPhase === 'voting' && (() => {
+            const canVote = selectedImposters.length === imposterCount;
+            return (
+              <div style={{ padding: '20px', maxWidth: '500px', margin: '0 auto' }}>
+                <h2 style={{ color: currentTheme.accent, marginBottom: '8px', textAlign: 'center', fontSize: '26px' }}>
+                  WHO IS THE IMPOSTER?
+                </h2>
+                <p style={{ color: currentTheme.secondary, marginBottom: '25px', textAlign: 'center', fontSize: '14px' }}>
+                  Select {imposterCount} player{imposterCount !== 1 ? 's' : ''}.
+                </p>
+                
+                <div style={{ marginBottom: '25px' }}>
+                  {playerNames.map((name, idx) => (
+                    <button
+                      key={idx}
+                      onClick={() => {
+                        const newSelected = [...selectedImposters];
+                        if (newSelected.includes(idx)) {
+                          newSelected.splice(newSelected.indexOf(idx), 1);
+                        } else if (newSelected.length < imposterCount) {
+                          newSelected.push(idx);
+                        }
+                        setSelectedImposters(newSelected);
+                      }}
+                      style={{
+                        width: '100%',
+                        padding: '15px 18px',
+                        marginBottom: '10px',
+                        fontSize: '16px',
+                        fontWeight: 'bold',
+                        backgroundColor: selectedImposters.includes(idx) ? currentTheme.accent : currentTheme.card,
+                        color: selectedImposters.includes(idx) ? 'white' : currentTheme.text,
+                        border: `2px solid ${selectedImposters.includes(idx) ? currentTheme.accent : currentTheme.border}`,
+                        borderRadius: '8px',
+                        cursor: 'pointer',
+                        transition: 'all 0.15s ease',
+                        textAlign: 'left'
+                      }}
+                    >
+                      {selectedImposters.includes(idx) ? '✓ ' : '○ '} {name}
+                    </button>
+                  ))}
+                </div>
+                
+                <button
+                  onClick={() => setGameState({ ...gameState, currentPhase: 'results', votes: selectedImposters })}
+                  disabled={!canVote}
+                  style={{
+                    width: '100%',
+                    padding: '16px',
+                    fontSize: '18px',
+                    fontWeight: 'bold',
+                    backgroundColor: canVote ? currentTheme.accent : currentTheme.border,
+                    color: canVote ? 'white' : currentTheme.secondary,
+                    border: 'none',
+                    borderRadius: '10px',
+                    cursor: canVote ? 'pointer' : 'not-allowed'
+                  }}
+                >
+                  REVEAL RESULT
+                </button>
+              </div>
+            );
+          })()}
+
+          {/* RESULTS & IMPOSTER GUESS SCREEN */}
+          {screen === 'roleReveal' && gameState && gameState.currentPhase === 'results' && (() => {
+            const votedIndices = gameState.votes;
+            const correctCount = votedIndices.filter(idx => gameState.imposters.includes(idx)).length;
+            const allCorrect = correctCount === imposterCount && votedIndices.length === imposterCount;
+            const imposterNames = gameState.imposters.map(idx => playerNames[idx]);
+
+            if (imposterGuessResult !== null) {
+              return (
+                <div style={{ textAlign: 'center', padding: '40px 20px', maxWidth: '500px', margin: '0 auto' }}>
+                  {imposterGuessResult ? (
+                    <>
+                      <h2 style={{ color: currentTheme.accent, fontSize: '40px', marginBottom: '15px', fontWeight: '900' }}>
+                        IMPOSTER WINS! 😈
+                      </h2>
+                      <p style={{ color: currentTheme.secondary, fontSize: '16px', marginBottom: '25px' }}>
+                        You were caught, but you guessed the secret word!
+                      </p>
+                    </>
+                  ) : (
+                    <>
+                      <h2 style={{ color: currentTheme.success, fontSize: '40px', marginBottom: '15px', fontWeight: '900' }}>
+                        PLAYERS WIN! 🎉
+                      </h2>
+                      <p style={{ color: currentTheme.secondary, fontSize: '16px', marginBottom: '25px' }}>
+                        The imposter guessed wrong! The secret word was: <strong>{gameState.word}</strong>
+                      </p>
+                    </>
+                  )}
+                  
+                  <button
+                    onClick={startGame}
+                    style={{
+                      width: '100%',
+                      maxWidth: '300px',
+                      padding: '15px',
+                      fontSize: '16px',
+                      fontWeight: 'bold',
+                      backgroundColor: currentTheme.accent,
+                      color: 'white',
+                      border: 'none',
+                      borderRadius: '10px',
+                      cursor: 'pointer',
+                      marginBottom: '12px'
+                    }}
+                  >
+                    PLAY AGAIN
+                  </button>
+                  
+                  <button
+                    onClick={() => setScreen('home')}
+                    style={{
+                      width: '100%',
+                      maxWidth: '300px',
+                      padding: '14px',
+                      fontSize: '16px',
+                      fontWeight: '600',
+                      backgroundColor: currentTheme.card,
+                      color: currentTheme.text,
+                      border: `1.5px solid ${currentTheme.border}`,
+                      borderRadius: '10px',
+                      cursor: 'pointer',
+                      display: 'block',
+                      margin: '0 auto'
+                    }}
+                  >
+                    HOME
+                  </button>
+                </div>
+              );
+            }
+
+            if (!allCorrect) {
+              const imposterIndexGuessed = votedIndices.find(idx => gameState.imposters.includes(idx));
+              if (imposterIndexGuessed !== undefined) {
+                return (
+                  <div style={{ textAlign: 'center', padding: '30px 20px', maxWidth: '500px', margin: '0 auto' }}>
+                    <h2 style={{ color: currentTheme.accent, marginBottom: '15px', fontSize: '28px' }}>ONE LAST CHANCE</h2>
+                    <p style={{ color: currentTheme.secondary, marginBottom: '10px' }}>
+                      <strong>{playerNames[imposterIndexGuessed]}</strong> was caught!
+                    </p>
+                    <p style={{ color: currentTheme.secondary, marginBottom: '25px', fontSize: '15px' }}>
+                      Can you guess the secret word?
+                    </p>
+                    
+                    <input
+                      type="text"
+                      value={imposterGuess}
+                      onChange={(e) => setImposterGuess(e.target.value)}
+                      placeholder="Type your guess here"
+                      autoFocus
+                      style={{
+                        width: '100%',
+                        maxWidth: '320px',
+                        padding: '14px',
+                        fontSize: '16px',
+                        backgroundColor: currentTheme.card,
+                        color: currentTheme.text,
+                        border: `2px solid ${currentTheme.border}`,
+                        borderRadius: '8px',
+                        marginBottom: '20px',
+                        boxSizing: 'border-box'
+                      }}
+                    />
+                    
+                    <button
+                      onClick={() => {
+                        const correct = imposterGuess.trim().toLowerCase() === gameState.word.toLowerCase();
+                        setImposterGuessResult(correct);
+                      }}
+                      style={{
+                        width: '100%',
+                        maxWidth: '320px',
+                        padding: '15px',
+                        fontSize: '16px',
+                        fontWeight: 'bold',
+                        backgroundColor: currentTheme.accent,
+                        color: 'white',
+                        border: 'none',
+                        borderRadius: '10px',
+                        cursor: 'pointer',
+                        display: 'block',
+                        margin: '0 auto'
+                      }}
+                    >
+                      SUBMIT GUESS
+                    </button>
+                  </div>
+                );
+              }
+            }
+
+            return (
+              <div style={{ textAlign: 'center', padding: '30px 20px', maxWidth: '500px', margin: '0 auto' }}>
+                <h2 style={{ color: currentTheme.accent, marginBottom: '20px', fontSize: '26px' }}>
+                  {imposterCount === 1 ? 'THE IMPOSTER WAS...' : 'THE IMPOSTERS WERE...'}
+                </h2>
+                
+                <div style={{
+                  backgroundColor: currentTheme.card,
+                  padding: '24px',
+                  borderRadius: '12px',
+                  marginBottom: '20px',
+                  border: `1.5px solid ${currentTheme.border}`
+                }}>
+                  <h3 style={{ color: currentTheme.accent, fontSize: '32px', margin: 0, fontWeight: '900' }}>
+                    {imposterNames.join(' & ')}
+                  </h3>
+                </div>
+                
+                <p style={{ color: currentTheme.secondary, marginBottom: '10px', fontSize: '14px' }}>THE WORD WAS</p>
+                
+                <div style={{
+                  backgroundColor: currentTheme.card,
+                  padding: '24px',
+                  borderRadius: '12px',
+                  marginBottom: '25px',
+                  border: `1.5px solid ${currentTheme.border}`
+                }}>
+                  <h3 style={{ color: currentTheme.success, fontSize: '36px', margin: 0, fontWeight: '900' }}>
+                    {gameState.word}
+                  </h3>
+                </div>
+                
+                <h2 style={{ color: allCorrect ? currentTheme.success : currentTheme.accent, fontSize: '34px', marginBottom: '25px', fontWeight: '900' }}>
+                  {allCorrect ? 'PLAYERS WIN! 🎉' : 'IMPOSTER WINS! 😈'}
+                </h2>
+                
+                <button
+                  onClick={startGame}
+                  style={{
+                    width: '100%',
+                    maxWidth: '300px',
+                    padding: '15px',
+                    fontSize: '16px',
+                    fontWeight: 'bold',
+                    backgroundColor: currentTheme.accent,
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '10px',
+                    cursor: 'pointer',
+                    marginBottom: '12px'
+                  }}
+                >
+                  PLAY AGAIN
+                </button>
+                
+                <button
+                  onClick={() => {
+                    setGameState(null);
+                    setScreen('playerCount');
+                  }}
+                  style={{
+                    width: '100%',
+                    maxWidth: '300px',
+                    padding: '14px',
+                    fontSize: '16px',
+                    fontWeight: '600',
+                    backgroundColor: currentTheme.card,
+                    color: currentTheme.text,
+                    border: `1.5px solid ${currentTheme.border}`,
+                    borderRadius: '10px',
+                    cursor: 'pointer',
+                    marginBottom: '12px',
+                    display: 'block',
+                    margin: '0 auto 12px auto'
+                  }}
+                >
+                  NEW SETUP
+                </button>
+                
+                <button
+                  onClick={() => {
+                    setGameState(null);
+                    setScreen('home');
+                  }}
+                  style={{
+                    width: '100%',
+                    maxWidth: '300px',
+                    padding: '14px',
+                    fontSize: '16px',
+                    fontWeight: '600',
+                    backgroundColor: currentTheme.card,
+                    color: currentTheme.text,
+                    border: `1.5px solid ${currentTheme.border}`,
+                    borderRadius: '10px',
+                    cursor: 'pointer',
+                    display: 'block',
+                    margin: '0 auto'
+                  }}
+                >
+                  HOME
+                </button>
+              </div>
+            );
+          })()}
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<GuessTheImposter />);
+  </script>
+</body>
+</html>
